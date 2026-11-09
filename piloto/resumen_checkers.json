@@ -1,0 +1,185 @@
+{
+  "imagen_id": "sha256:fd8d3d1c021fa451d07f99009e759e39c70df6b8db0a63c379c7bc6743e07362",
+  "casos": [
+    {
+      "problem_id": "690_D3",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "937_A",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "370_D",
+      "tipo": "verifica_validez_solucion",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "1397_C",
+      "tipo": "verifica_validez_solucion",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 6,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 4,
+        "comprobacion_interna": 2
+      }
+    },
+    {
+      "problem_id": "p02966",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "p00190",
+      "tipo": "secuencia_palabras",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "351_B",
+      "tipo": "secuencia_decimales",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "1046_H",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "980_C",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "604_B",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "15_E",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "p00460",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "1360_A",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "p01898",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    },
+    {
+      "problem_id": "653_C",
+      "tipo": "secuencia_enteros",
+      "estado": "completado",
+      "evaluadas": 10,
+      "comprobacion_superada": 10,
+      "particion": {
+        "estado": "separadas",
+        "ajuste": 7,
+        "comprobacion_interna": 3
+      }
+    }
+  ]
+}

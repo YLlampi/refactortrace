@@ -1,0 +1,11 @@
+{
+  "id": "valor_absoluto_ejemplo",
+  "original": "original.py",
+  "modificado": "modificado.py",
+  "descripcion_validez": "Una línea con un entero decimal; entradas revisadas manualmente.",
+  "entradas": [
+    {"id": "01_positivo", "stdin": "3\n", "validez": "revisada"},
+    {"id": "02_negativo", "stdin": "-2\n", "validez": "revisada"},
+    {"id": "03_cero", "stdin": "0\n", "validez": "revisada"}
+  ]
+}

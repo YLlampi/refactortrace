@@ -1,0 +1,37 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    font=\small,
+    etapa/.style={draw, rounded corners=2pt, align=center, minimum width=7.4cm,
+                  minimum height=7mm, fill=black!4},
+    decision/.style={draw, diamond, align=center, aspect=2.6, inner sep=1pt},
+    flecha/.style={-{Stealth[length=2mm]}, thick},
+    node distance=4mm
+]
+\node[etapa] (entrada) {Programa original y transformación solicitada};
+\node[etapa, below=of entrada] (modelo) {Generación de la refactorización con LLM};
+\node[etapa, below=of modelo] (verificar) {Comprobación de sintaxis y objetivo estructural};
+\node[etapa, below=of verificar] (cambios) {Identificación de líneas modificadas};
+\node[etapa, below=of cambios] (cobertura) {Ejecución del original y registro de cobertura};
+\node[etapa, below=of cobertura] (orden) {Priorización de entradas por cobertura adicional};
+\node[etapa, below=of orden] (comparar) {Comparación de ambas versiones};
+\node[decision, text width=21mm, below=5mm of comparar] (dif) {¿Diferencia válida?};
+\node[etapa, below=10mm of dif] (salida) {Propuesta y reporte de comprobaciones};
+\node[etapa, minimum width=3cm, text width=3cm, right=17mm of dif] (corregir)
+      {Corrección con contraejemplo};
+\node[etapa, below=of salida] (evaluar) {Evaluación con pruebas reservadas};
+\draw[flecha] (entrada) -- (modelo);
+\draw[flecha] (modelo) -- (verificar);
+\draw[flecha] (verificar) -- (cambios);
+\draw[flecha] (cambios) -- (cobertura);
+\draw[flecha] (cobertura) -- (orden);
+\draw[flecha] (orden) -- (comparar);
+\draw[flecha] (comparar) -- (dif);
+\draw[flecha] (dif) -- node[left] {No} (salida);
+\draw[flecha] (dif) -- node[above] {Sí} (corregir);
+\draw[flecha] (corregir.north) |- ([xshift=5mm]verificar.east) -- (verificar.east);
+\draw[flecha] (salida) -- (evaluar);
+\end{tikzpicture}
+\caption{Proceso propuesto para la refactorización guiada por contraejemplos. La corrección se realiza dentro de un presupuesto limitado; si este se agota, el caso se registra para revisión.}
+\label{fig:pipeline}
+\end{figure}

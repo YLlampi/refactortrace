@@ -1,0 +1,166 @@
+{
+  "dataset_sha256": "4d7143ca984022e496b343dbffaa769ac99c35cb32fa45bd9e8c0151a00d7c06",
+  "imagen_id": "sha256:fd8d3d1c021fa451d07f99009e759e39c70df6b8db0a63c379c7bc6743e07362",
+  "casos": [
+    {
+      "problem_id": "p02687",
+      "sample_id": "p02687_py3_0",
+      "estado": "pendiente_insuficiente_o_fallo_original",
+      "entradas_validas_distintas": 0,
+      "comandos_probados": 3,
+      "segundos_pared": 41.26055649999762
+    },
+    {
+      "problem_id": "690_D3",
+      "sample_id": "690_D3_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 16,
+      "comandos_probados": 18,
+      "segundos_pared": 71.46870050003054
+    },
+    {
+      "problem_id": "937_A",
+      "sample_id": "937_A_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 45.09906719997525
+    },
+    {
+      "problem_id": "370_D",
+      "sample_id": "370_D_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 13,
+      "comandos_probados": 20,
+      "segundos_pared": 42.34511479997309
+    },
+    {
+      "problem_id": "1397_C",
+      "sample_id": "1397_C_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 42.28603839996504
+    },
+    {
+      "problem_id": "p03940",
+      "sample_id": "p03940_py3_0",
+      "estado": "pendiente_insuficiente_o_fallo_original",
+      "entradas_validas_distintas": 16,
+      "comandos_probados": 20,
+      "segundos_pared": 75.61924299999373
+    },
+    {
+      "problem_id": "p02966",
+      "sample_id": "p02966_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 16,
+      "comandos_probados": 20,
+      "segundos_pared": 40.21036810002988
+    },
+    {
+      "problem_id": "p00190",
+      "sample_id": "p00190_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 18,
+      "comandos_probados": 20,
+      "segundos_pared": 39.16841670003487
+    },
+    {
+      "problem_id": "304_B",
+      "sample_id": "304_B_py3_0",
+      "estado": "pendiente_insuficiente_o_fallo_original",
+      "entradas_validas_distintas": 0,
+      "comandos_probados": 12,
+      "segundos_pared": 36.26307429996086
+    },
+    {
+      "problem_id": "351_B",
+      "sample_id": "351_B_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 18,
+      "comandos_probados": 20,
+      "segundos_pared": 37.17523270001402
+    },
+    {
+      "problem_id": "603_A",
+      "sample_id": "603_A_py3_0",
+      "estado": "pendiente_insuficiente_o_fallo_original",
+      "entradas_validas_distintas": 19,
+      "comandos_probados": 20,
+      "segundos_pared": 42.397323000011966
+    },
+    {
+      "problem_id": "1046_H",
+      "sample_id": "1046_H_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 12,
+      "comandos_probados": 20,
+      "segundos_pared": 51.61470620002365
+    },
+    {
+      "problem_id": "980_C",
+      "sample_id": "980_C_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 40.70447910000803
+    },
+    {
+      "problem_id": "604_B",
+      "sample_id": "604_B_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 41.54298720002407
+    },
+    {
+      "problem_id": "p03303 SoundHound Inc",
+      "sample_id": "p03303 SoundHound Inc_py3_0",
+      "estado": "pendiente_insuficiente_o_fallo_original",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 46.06842719996348
+    },
+    {
+      "problem_id": "15_E",
+      "sample_id": "15_E_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 11,
+      "comandos_probados": 15,
+      "segundos_pared": 41.26615049998509
+    },
+    {
+      "problem_id": "p00460",
+      "sample_id": "p00460_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 39.91955639998196
+    },
+    {
+      "problem_id": "1360_A",
+      "sample_id": "1360_A_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 38.498191600025166
+    },
+    {
+      "problem_id": "p01898",
+      "sample_id": "p01898_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 37.77444359997753
+    },
+    {
+      "problem_id": "653_C",
+      "sample_id": "653_C_py3_0",
+      "estado": "preliminar_apto",
+      "entradas_validas_distintas": 20,
+      "comandos_probados": 20,
+      "segundos_pared": 36.87242089997744
+    }
+  ]
+}

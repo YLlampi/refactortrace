@@ -1,0 +1,4 @@
+# Construir manualmente: docker build -f Dockerfile.checker -t tesis-checker:local .
+# Fijar el digest para un experimento reproducible; esta etiqueta es solo de desarrollo.
+FROM python:3.12-bookworm
+RUN command -v g++ && python --version

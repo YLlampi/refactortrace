@@ -1,0 +1,26 @@
+.temporales/
+__pycache__/
+*.pyc
+informes/
+
+# Credenciales y configuración local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Datos de terceros y archivos derivados; recuperables desde sus fuentes.
+linteval_lite.jsonl
+linteval_preview.json
+ejemplos/linteval_p00364/
+ejemplos/exploracion_*/
+piloto/casos_desarrollo/
+
+# Salidas y compilación local
+*.log
+*.aux
+*.toc
+*.out
+*.synctex.gz
+documento/propuesta.tex
