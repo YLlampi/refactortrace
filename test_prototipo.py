@@ -1,10 +1,21 @@
-import tempfile
+import json
+import subprocess
 import unittest
 from unittest.mock import patch
 from pathlib import Path
+from types import SimpleNamespace
 
+import ejecutor_docker
 import prototipo
 import checker_contenedor
+
+
+def resultado_simulado(programa, entrada, limite, cobertura=False, imagen=None):
+    valor = int(entrada)
+    salida = abs(valor) if Path(programa).name == 'original.py' else valor
+    return {'estado': 'ok', 'codigo_salida': 0, 'stdout_hex': f'{salida}\n'.encode().hex(),
+            'stderr_hex': '', 'lineas': ([1, 2, 3] if valor < 0 else [1, 2, 5]) if cobertura else [],
+            'lineas_ejecutables': [1, 2, 3, 5], 'python_contenedor': 'prueba', 'segundos': 0.0}
 
 
 class PruebasPrototipo(unittest.TestCase):
@@ -15,7 +26,8 @@ class PruebasPrototipo(unittest.TestCase):
         self.assertEqual(checker_contenedor.interpretar({'estado': 'terminado', 'codigo': 3}), 'inconcluso')
         self.assertEqual(checker_contenedor.interpretar({'estado': 'tiempo_agotado', 'codigo': None}), 'inconcluso')
 
-    def test_checker_registra_validez_separada_de_diferencia(self):
+    @patch.object(prototipo, 'ejecutar', side_effect=resultado_simulado)
+    def test_checker_registra_validez_separada_de_diferencia(self, _ejecucion):
         caso = Path(__file__).parent / 'ejemplos/valor_absoluto/caso.json'
         resultado_checker = {'estado': 'completado', 'original': {'interpretacion': 'aceptada'},
                              'propuesta': {'interpretacion': 'aceptada'}}
@@ -47,7 +59,8 @@ class PruebasPrototipo(unittest.TestCase):
         self.assertEqual(prototipo.cambios_original(original, 'x = 2\nprint(x)\n'), {1})
         self.assertEqual(prototipo.cambios_original(original, original + 'print(2)\n'), set())
 
-    def test_ejemplo_detecta_diferencia_reproducida(self):
+    @patch.object(prototipo, 'ejecutar', side_effect=resultado_simulado)
+    def test_ejemplo_detecta_diferencia_reproducida(self, _ejecucion):
         caso = Path(__file__).parent / 'ejemplos/valor_absoluto/caso.json'
         resultado = prototipo.evaluar(caso, 'cambios')
         self.assertEqual(resultado['orden_candidato'][0], '02_negativo')
@@ -56,14 +69,37 @@ class PruebasPrototipo(unittest.TestCase):
         self.assertEqual(len(resultado['ejecuciones']), 6)
 
     def test_tiempo_agotado_no_es_contraejemplo(self):
-        prototipo.TEMPORALES.mkdir(exist_ok=True)
-        with tempfile.TemporaryDirectory(dir=prototipo.TEMPORALES) as temp:
-            programa = Path(temp) / 'espera.py'
-            programa.write_text('while True: pass\n', encoding='utf-8')
+        programa = Path(__file__).parent / 'ejemplos/valor_absoluto/original.py'
+        respuesta = {'estado': 'tiempo_agotado', 'codigo_salida': None, 'stdout_hex': '',
+                     'stderr_hex': '', 'lineas': []}
+        proceso = SimpleNamespace(returncode=0, stdout=json.dumps(respuesta).encode(), stderr=b'')
+        with patch.object(ejecutor_docker.subprocess, 'run', return_value=proceso) as llamada:
             resultado = prototipo.ejecutar(programa, '', 0.5)
         self.assertEqual(resultado['estado'], 'tiempo_agotado')
+        comando = llamada.call_args.args[0]
+        self.assertIn('--read-only', comando)
+        self.assertEqual(comando[comando.index('--network') + 1], 'none')
 
-    def test_aleatorio_no_prepara_cobertura(self):
+    def test_no_hay_ejecucion_local_si_docker_falla(self):
+        programa = Path(__file__).parent / 'ejemplos/valor_absoluto/original.py'
+        with patch.object(ejecutor_docker.subprocess, 'run', side_effect=FileNotFoundError('docker')) as llamada:
+            resultado = prototipo.ejecutar(programa, '1\n', 2)
+        self.assertEqual(resultado['estado'], 'error_entorno')
+        self.assertEqual(llamada.call_count, 1)
+
+    def test_limpieza_si_el_contenedor_agota_su_limite(self):
+        programa = Path(__file__).parent / 'ejemplos/valor_absoluto/original.py'
+        fin = SimpleNamespace(returncode=0, stdout='', stderr='')
+        with patch.object(ejecutor_docker.subprocess, 'run',
+                          side_effect=[subprocess.TimeoutExpired('docker', 1), fin]) as llamada:
+            resultado = prototipo.ejecutar(programa, '1\n', 1)
+        self.assertEqual(resultado['estado'], 'error_entorno')
+        primer_comando = llamada.call_args_list[0].args[0]
+        nombre = primer_comando[primer_comando.index('--name') + 1]
+        self.assertEqual(llamada.call_args_list[1].args[0], ['docker', 'rm', '--force', nombre])
+
+    @patch.object(prototipo, 'ejecutar', side_effect=resultado_simulado)
+    def test_aleatorio_no_prepara_cobertura(self, _ejecucion):
         caso = Path(__file__).parent / 'ejemplos/valor_absoluto/caso.json'
         resultado = prototipo.evaluar(caso, 'aleatoria', limite_entradas=1)
         self.assertTrue(all(r['fase'] != 'cobertura' for r in resultado['ejecuciones']))

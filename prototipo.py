@@ -5,17 +5,12 @@ import dis
 import json
 import math
 import random
-import subprocess
 import sys
-import tempfile
 import time
 import types
 from pathlib import Path
 import checker as checker_testlib
-
-TRAZA = Path(__file__).with_name('ejecutor_traza.py').resolve()
-TEMPORALES = Path(__file__).resolve().parent / '.temporales'
-
+import ejecutor_docker
 
 def lineas_ejecutables(codigo):
     resultado = set()
@@ -28,41 +23,22 @@ def lineas_ejecutables(codigo):
     return resultado
 
 
-def cambios_original(original, modificado):
+def cambios_textuales_original(original, modificado):
     a, b = original.splitlines(), modificado.splitlines()
     matcher = difflib.SequenceMatcher(None, a, b, autojunk=False)
     cambiadas = set()
     for operacion, inicio, fin, _, _ in matcher.get_opcodes():
         if operacion in ('replace', 'delete'):
             cambiadas.update(range(inicio + 1, fin + 1))
-    return cambiadas & lineas_ejecutables(original)
+    return cambiadas
 
 
-def ejecutar(programa, entrada, limite, cobertura=False):
-    inicio = time.perf_counter()
-    TEMPORALES.mkdir(exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='tesis_ejecucion_', dir=TEMPORALES) as tmp:
-        archivo_cobertura = Path(tmp) / 'cobertura.json'
-        cmd = [sys.executable, '-I']
-        if cobertura:
-            cmd += [str(TRAZA), str(programa.resolve()), str(archivo_cobertura)]
-        else:
-            cmd += [str(programa.resolve())]
-        try:
-            proceso = subprocess.run(cmd, input=entrada.encode('utf-8'), capture_output=True,
-                                    timeout=limite, cwd=tmp)
-            estado = 'ok' if proceso.returncode == 0 else 'error_programa'
-            lineas = json.loads(archivo_cobertura.read_text(encoding='utf-8')) if archivo_cobertura.exists() else []
-            resultado = {'estado': estado, 'codigo_salida': proceso.returncode,
-                         'stdout_hex': proceso.stdout.hex(), 'stderr_hex': proceso.stderr.hex(),
-                         'lineas': lineas}
-        except subprocess.TimeoutExpired:
-            resultado = {'estado': 'tiempo_agotado', 'codigo_salida': None,
-                         'stdout_hex': '', 'stderr_hex': '', 'lineas': []}
-        except OSError as error:
-            resultado = {'estado': 'error_entorno', 'detalle': str(error), 'lineas': []}
-    resultado['segundos'] = time.perf_counter() - inicio
-    return resultado
+def cambios_original(original, modificado):
+    return cambios_textuales_original(original, modificado) & lineas_ejecutables(original)
+
+
+def ejecutar(programa, entrada, limite, cobertura=False, imagen=None):
+    return ejecutor_docker.ejecutar(programa, entrada, limite, cobertura, imagen)
 
 
 def ordenar(coberturas, objetivo):
@@ -110,7 +86,7 @@ def comparar_salidas(a, b, comparador):
 
 
 def evaluar(caso_path, estrategia, limite_entradas=5, semilla=42, timeout=2,
-            checker_path=None, testlib_path=None, imagen_checker=None):
+            checker_path=None, testlib_path=None, imagen_checker=None, imagen_ejecucion=None):
     if limite_entradas < 1 or timeout <= 0:
         raise ValueError('El límite de entradas y el tiempo deben ser positivos')
     if bool(checker_path) != bool(testlib_path):
@@ -124,8 +100,10 @@ def evaluar(caso_path, estrategia, limite_entradas=5, semilla=42, timeout=2,
     modificado = (carpeta / caso['modificado']).resolve()
     codigo_original = original.read_text(encoding='utf-8')
     codigo_modificado = modificado.read_text(encoding='utf-8')
-    compile(codigo_modificado, str(modificado), 'exec')
-    cambios = cambios_original(codigo_original, codigo_modificado)
+    lineas_modificadas = cambios_textuales_original(codigo_original, codigo_modificado)
+    ejecutables_original = None
+    version_ejecucion = None
+    cambios = None
     entradas = {x['id']: x['stdin'] for x in caso['entradas']}
     registros = []
     comparaciones = []
@@ -133,11 +111,17 @@ def evaluar(caso_path, estrategia, limite_entradas=5, semilla=42, timeout=2,
     inicio = time.perf_counter()
     if estrategia in ('cambios', 'general'):
         for ident in sorted(entradas):
-            resultado = ejecutar(original, entradas[ident], timeout, cobertura=True)
+            resultado = ejecutar(original, entradas[ident], timeout, cobertura=True, imagen=imagen_ejecucion)
+            if resultado['estado'] == 'ok' and resultado.get('lineas_ejecutables') is None:
+                resultado['estado'] = 'error_cobertura'
+            if resultado['estado'] == 'ok' and ejecutables_original is None:
+                ejecutables_original = set(resultado['lineas_ejecutables'])
+                cambios = lineas_modificadas & ejecutables_original
+                version_ejecucion = resultado.get('python_contenedor')
             originales[ident] = resultado
             registros.append({'entrada': ident, 'version': 'original', 'fase': 'cobertura', **resultado})
         coberturas = {i: r['lineas'] for i, r in originales.items() if r['estado'] == 'ok'}
-        objetivo = cambios if estrategia == 'cambios' else lineas_ejecutables(codigo_original)
+        objetivo = (cambios or set()) if estrategia == 'cambios' else (ejecutables_original or set())
         orden = ordenar(coberturas, objetivo)
     else:
         orden = sorted(entradas)
@@ -145,13 +129,19 @@ def evaluar(caso_path, estrategia, limite_entradas=5, semilla=42, timeout=2,
     estado, contraejemplo = 'sin_diferencia_observada', None
     for ident in orden[:limite_entradas]:
         if ident not in originales:
-            originales[ident] = ejecutar(original, entradas[ident], timeout)
+            originales[ident] = ejecutar(original, entradas[ident], timeout, imagen=imagen_ejecucion)
+            if originales[ident]['estado'] == 'ok' and originales[ident].get('lineas_ejecutables') is None:
+                originales[ident]['estado'] = 'error_cobertura'
+            if originales[ident]['estado'] == 'ok' and ejecutables_original is None:
+                ejecutables_original = set(originales[ident]['lineas_ejecutables'])
+                cambios = lineas_modificadas & ejecutables_original
+                version_ejecucion = originales[ident].get('python_contenedor')
             registros.append({'entrada': ident, 'version': 'original', 'fase': 'comparacion', **originales[ident]})
         a = originales[ident]
         if a['estado'] != 'ok':
             estado = 'inconcluso'
             continue
-        b = ejecutar(modificado, entradas[ident], timeout)
+        b = ejecutar(modificado, entradas[ident], timeout, imagen=imagen_ejecucion)
         registros.append({'entrada': ident, 'version': 'modificado', 'fase': 'comparacion', **b})
         if b['estado'] != 'ok':
             estado = 'inconcluso'
@@ -168,8 +158,8 @@ def evaluar(caso_path, estrategia, limite_entradas=5, semilla=42, timeout=2,
             continue
         if not comparacion:
             # Una diferencia debe reproducirse en ambas versiones sin instrumentación.
-            rep_a = ejecutar(original, entradas[ident], timeout)
-            rep_b = ejecutar(modificado, entradas[ident], timeout)
+            rep_a = ejecutar(original, entradas[ident], timeout, imagen=imagen_ejecucion)
+            rep_b = ejecutar(modificado, entradas[ident], timeout, imagen=imagen_ejecucion)
             registros += [{'entrada': ident, 'version': 'original', 'fase': 'repeticion', **rep_a},
                           {'entrada': ident, 'version': 'modificado', 'fase': 'repeticion', **rep_b}]
             if (rep_a['estado'] == rep_b['estado'] == 'ok' and
@@ -183,9 +173,11 @@ def evaluar(caso_path, estrategia, limite_entradas=5, semilla=42, timeout=2,
         estado = 'inconcluso'
     return {'caso': caso['id'], 'estrategia': estrategia, 'semilla': semilla,
             'comparador': comparador,
+            'python_control': sys.version.split()[0], 'python_analisis_lineas': version_ejecucion,
             'limite_entradas': limite_entradas, 'timeout_segundos': timeout,
-            'lineas_cambiadas_original': sorted(cambios),
-            'seleccion_cambios_aplicable': bool(cambios), 'orden_candidato': orden,
+            'lineas_cambiadas_original': sorted(cambios or ()),
+            'seleccion_cambios_aplicable': bool(cambios) if cambios is not None else None,
+            'orden_candidato': orden,
             'estado': estado, 'contraejemplo': contraejemplo, 'ejecuciones': registros,
             'comparaciones': comparaciones,
             'tiempo_total_segundos': time.perf_counter() - inicio}
@@ -202,9 +194,10 @@ def main():
     parser.add_argument('--checker', type=Path, help='Checker testlib del caso')
     parser.add_argument('--testlib', type=Path, help='Archivo testlib.h compatible')
     parser.add_argument('--imagen-checker', help='Imagen Docker con Python y g++')
+    parser.add_argument('--imagen-ejecucion', help='Imagen Docker para ejecutar los programas Python')
     args = parser.parse_args()
     informe = evaluar(args.caso.resolve(), args.estrategia, args.limite, args.semilla, args.timeout,
-                      args.checker, args.testlib, args.imagen_checker)
+                      args.checker, args.testlib, args.imagen_checker, args.imagen_ejecucion)
     texto = json.dumps(informe, ensure_ascii=False, indent=2)
     if args.salida:
         args.salida.write_text(texto + '\n', encoding='utf-8')
