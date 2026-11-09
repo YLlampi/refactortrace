@@ -46,8 +46,6 @@ Las rutas y los hashes descargados están fijados en el script; si los archivos 
 
 Los resultados exploratorios y sus límites están en [generadores](INFORME_GENERADORES.md), [preparación del piloto](piloto/RESULTADOS_PREPARACION.md) y [checkers](piloto/RESULTADOS_CHECKERS.md). Los conjuntos de comprobación interna no son la evaluación final. No se han estudiado los 40 problemas reservados.
 
-El [documento de tesis](documento/Tesis_RefactorTrace.pdf) utiliza la plantilla UNSA y presenta el contexto, el estado del arte y la propuesta. Sus fuentes editables están en [documento](documento/README.md). La evaluación final sigue pendiente.
-
 ## Limitaciones
 
 La selección basada en líneas es aproximada y puede fallar con código reorganizado o solo añadido. Las entradas deben prepararse y validarse con conocimiento de su problema. No se han integrado el modelo de lenguaje, las correcciones automáticas ni la verificación estructural. Los tiempos de ejemplo no prueban ahorros; la generación y validación externas deben contabilizarse antes de comparar métodos.

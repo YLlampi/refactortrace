@@ -23,4 +23,5 @@ piloto/casos_desarrollo/
 *.toc
 *.out
 *.synctex.gz
-documento/propuesta.tex
+# La tesis y sus archivos de edición se conservan solo en el equipo local.
+documento/
