@@ -1,7 +1,7 @@
 \documentclass[11pt,openright,final]{unsa}
 \usepackage{longtable,array,needspace}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
-\hypersetup{hidelinks}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
 \setlength{\emergencystretch}{3em}
 \title{Refactorización de código Python asistida por modelos de lenguaje y guiada por contraejemplos}
 \author{Llampi Hancco Yamil Yonder}
@@ -219,7 +219,11 @@ Se usarán casos de desarrollo para ajustar la estrategia y un conjunto separado
 
 La herramienta RefactorTrace implementa la comparación de ejecuciones, la identificación de líneas modificadas, la priorización de entradas y la ejecución opcional de verificadores de salida. La generación de refactorizaciones y la solicitud de correcciones mediante un LLM corresponden al diseño del procedimiento propuesto.
 
-El código fuente y las instrucciones de ejecución están disponibles en el \href{https://github.com/YLlampi/refactortrace}{repositorio de RefactorTrace}. Los componentes principales son los siguientes:
+El código fuente y las instrucciones de ejecución están disponibles en el repositorio de RefactorTrace:
+
+\url{https://github.com/YLlampi/refactortrace}
+
+Los componentes principales son los siguientes:
 
 \begin{itemize}
 \item Comparación de ejecuciones y priorización: \href{https://github.com/YLlampi/refactortrace/blob/main/prototipo.py}{prototipo.py}

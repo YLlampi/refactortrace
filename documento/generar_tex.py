@@ -118,7 +118,7 @@ def main():
     encabezado = r'''\documentclass[11pt,openright,final]{unsa}
 \usepackage{longtable,array,needspace}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
-\hypersetup{hidelinks}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
 \setlength{\emergencystretch}{3em}
 \title{Refactorización de código Python asistida por modelos de lenguaje y guiada por contraejemplos}
 \author{Llampi Hancco Yamil Yonder}

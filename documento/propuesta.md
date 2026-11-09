@@ -208,7 +208,11 @@ Se usarán casos de desarrollo para ajustar la estrategia y un conjunto separado
 
 La herramienta RefactorTrace implementa la comparación de ejecuciones, la identificación de líneas modificadas, la priorización de entradas y la ejecución opcional de verificadores de salida. La generación de refactorizaciones y la solicitud de correcciones mediante un LLM corresponden al diseño del procedimiento propuesto.
 
-El código fuente y las instrucciones de ejecución están disponibles en el [repositorio de RefactorTrace](https://github.com/YLlampi/refactortrace). Los componentes principales son los siguientes:
+El código fuente y las instrucciones de ejecución están disponibles en el repositorio de RefactorTrace:
+
+https://github.com/YLlampi/refactortrace
+
+Los componentes principales son los siguientes:
 
 - Comparación de ejecuciones y priorización: [prototipo.py](https://github.com/YLlampi/refactortrace/blob/main/prototipo.py)
 - Ejecución de verificadores de salida: [checker.py](https://github.com/YLlampi/refactortrace/blob/main/checker.py)
